@@ -1,0 +1,192 @@
+:original_name: rts_02_0055.html
+
+.. _rts_02_0055:
+
+OS::Heat::SoftwareConfig
+========================
+
+A resource for describing and storing software configuration.
+
+The software_configs API which backs this resource creates immutable configs, so any change to the template resource definition will result in a new config being created, and the old one being deleted.
+
+Configs can be defined in the same template which uses them, or they can be created in one stack, and passed to another stack via a parameter.
+
+A config resource can be referenced in other resource properties which are config-aware. This includes the properties OS::Nova::Server user_data, OS::Heat::SoftwareDeployment config and OS::Heat::MultipartMime parts config.
+
+Along with the config script itself, this resource can define schemas for inputs and outputs which the config script is expected to consume and produce. Inputs and outputs are optional and will map to concepts which are specific to the configuration tool being used.
+
+.. note::
+
+   If the software configuration function is used, the cloud-init tool must be installed on images.
+
+Optional Properties
+-------------------
+
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name                              | Description                                                                                                                                          |
++===================================+======================================================================================================================================================+
+| config                            | Configuration script or manifest which specifies what actual configuration is performed.                                                             |
+|                                   |                                                                                                                                                      |
+|                                   | String value expected.                                                                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   | Updates cause replacement.                                                                                                                           |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| group                             | Namespace to group this software config by when delivered to a server. This may imply what configuration tool is going to perform the configuration. |
+|                                   |                                                                                                                                                      |
+|                                   | String value expected.                                                                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   | Updates cause replacement.                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   | Defaults to "Heat::Ungrouped".                                                                                                                       |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| inputs                            | Schema representing the inputs that this software config is expecting.                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   | List value expected.                                                                                                                                 |
+|                                   |                                                                                                                                                      |
+|                                   | Updates cause replacement.                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   | *List contents:*                                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   | -  \*                                                                                                                                                |
+|                                   |                                                                                                                                                      |
+|                                   |    Map value expected.                                                                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   |    Updates cause replacement.                                                                                                                        |
+|                                   |                                                                                                                                                      |
+|                                   |    *Map properties:*                                                                                                                                 |
+|                                   |                                                                                                                                                      |
+|                                   |    -  default                                                                                                                                        |
+|                                   |                                                                                                                                                      |
+|                                   |       Default value for the input if none is specified.                                                                                              |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |    -  description                                                                                                                                    |
+|                                   |                                                                                                                                                      |
+|                                   |       Description of the input.                                                                                                                      |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |    -  name                                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |       Name of the input.                                                                                                                             |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |    -  replace_on_change                                                                                                                              |
+|                                   |                                                                                                                                                      |
+|                                   |       Replace the deployment instead of updating it when the input value changes.                                                                    |
+|                                   |                                                                                                                                                      |
+|                                   |       Boolean value expected.                                                                                                                        |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |       Defaults to "False".                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |    -  type                                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |       Type of the value of the input.                                                                                                                |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |       Defaults to "String".                                                                                                                          |
+|                                   |                                                                                                                                                      |
+|                                   |       Allowed values: String, Number, CommaDelimitedList, Json, Boolean                                                                              |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| options                           | Map containing options specific to the configuration management tool used by this resource.                                                          |
+|                                   |                                                                                                                                                      |
+|                                   | Map value expected.                                                                                                                                  |
+|                                   |                                                                                                                                                      |
+|                                   | Updates cause replacement.                                                                                                                           |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| outputs                           | Schema representing the outputs that this software config will produce.                                                                              |
+|                                   |                                                                                                                                                      |
+|                                   | List value expected.                                                                                                                                 |
+|                                   |                                                                                                                                                      |
+|                                   | Updates cause replacement.                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   | *List contents:*                                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   | -  \*                                                                                                                                                |
+|                                   |                                                                                                                                                      |
+|                                   |    Map value expected.                                                                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   |    Updates cause replacement.                                                                                                                        |
+|                                   |                                                                                                                                                      |
+|                                   |    *Map properties:*                                                                                                                                 |
+|                                   |                                                                                                                                                      |
+|                                   |    -  description                                                                                                                                    |
+|                                   |                                                                                                                                                      |
+|                                   |       Description of the output.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |    -  error_output                                                                                                                                   |
+|                                   |                                                                                                                                                      |
+|                                   |       Denotes that the deployment is in an error state if this output has a value.                                                                   |
+|                                   |                                                                                                                                                      |
+|                                   |       Boolean value expected.                                                                                                                        |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |       Defaults to "False".                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |    -  name                                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |       Name of the output.                                                                                                                            |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |    -  type                                                                                                                                           |
+|                                   |                                                                                                                                                      |
+|                                   |       Type of the value of the output.                                                                                                               |
+|                                   |                                                                                                                                                      |
+|                                   |       String value expected.                                                                                                                         |
+|                                   |                                                                                                                                                      |
+|                                   |       Updates cause replacement.                                                                                                                     |
+|                                   |                                                                                                                                                      |
+|                                   |       Defaults to "String".                                                                                                                          |
+|                                   |                                                                                                                                                      |
+|                                   |       Allowed values: String, Number, CommaDelimitedList, Json, Boolean                                                                              |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Attributes
+----------
+
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name                              | Description                                                                                                                                                                        |
++===================================+====================================================================================================================================================================================+
+| config                            | The config value of the software config.                                                                                                                                           |
+|                                   |                                                                                                                                                                                    |
+|                                   | The config is generally read from a script file and often contains some parameter substitutions. The config value is the script content that actually runs in the virtual machine. |
++-----------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+HOT Syntax
+----------
+
+.. code-block::
+
+   heat_template_version: 2014-10-16
+   ...
+   resources:
+     ...
+     the_resource:
+       type: OS::Heat::SoftwareConfig
+       properties:
+         config: String
+         group: String
+         inputs: [{"type": String, "default": String, "name": String, "replace_on_change": Boolean, "description": String}, {"type": String, "default": String, "name": String, "replace_on_change": Boolean, "description": String}, ...]
+         options: {...}
+         outputs: [{"type": String, "name": String, "error_output": Boolean, "description": String}, {"type": String, "name": String, "error_output": Boolean, "description": String}, ...]
